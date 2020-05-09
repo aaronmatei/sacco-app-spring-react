@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="aaronmatei">
+        <sql>
+            CREATE TABLE loan (
+            id BIGINT NOT NULL AUTO_INCREMENT,
+            type VARCHAR(255) NOT NULL,
+            amount FLOAT NOT NULL,
+            period FLOAT NOT NULL,
+            purpose VARCHAR(255) NOT NULL,
+            date_issued DATE,
+            CONSTRAINT pk_id PRIMARY KEY (id)
+            );
+        </sql>
+        <rollback>
+            DROP TABLE loan;
+        </rollback>
+
+    </changeSet>
+    <changeSet id="2" author="aaronmatei">
+        <sql>
+            CREATE TABLE transaction (
+            id BIGINT NOT NULL AUTO_INCREMENT,
+            loan_id BIGINT NOT NULL,
+            user_id BIGINT NOT NULL,
+            date_of_issue DATETIME,
+            CONSTRAINT pk_id PRIMARY KEY (id),
+            CONSTRAINT fk_tran_loan FOREIGN KEY (loan_id) REFERENCES loan(id) ON DELETE CASCADE ON UPDATE CASCADE
+            );
+        </sql>
+        <rollback>
+            DROP TABLE transaction;
+        </rollback>
+    </changeSet>
+    <changeSet id="3" author="aaronmatei">
+        <sql>
+            INSERT INTO loan (type, amount, period, purpose, date_issued) VALUES ('personal',100000.00,5.00,'personal',NOW());
+            INSERT INTO loan (type, amount, period, purpose, date_issued) VALUES ('mortgage',2500000.00,10.00,'personal',NOW());
+            INSERT INTO loan (type, amount, period, purpose, date_issued) VALUES ('debt consolidation',150000.00,3.00,'personal',NOW());
+            INSERT INTO loan (type, amount, period, purpose, date_issued) VALUES ('vehicle loan',10000000.00,15.00,'personal',NOW());
+            INSERT INTO loan (type, amount, period, purpose, date_issued) VALUES ('home equity',3500000.00,6.00,'personal',NOW());
+        </sql>
+        <rollback>
+            TRUNCATE TABLE loan;
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

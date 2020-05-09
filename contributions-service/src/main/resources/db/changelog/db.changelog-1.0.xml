@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="aaronmatei">
+        <sql>
+            CREATE TABLE saving (
+            id BIGINT NOT NULL AUTO_INCREMENT,
+            type VARCHAR(255) NOT NULL,
+            amount FLOAT NOT NULL,
+            date_saved DATE,
+            CONSTRAINT pk_id PRIMARY KEY (id)
+            );
+        </sql>
+        <rollback>
+            DROP TABLE saving;
+        </rollback>
+    </changeSet>
+    <changeSet id="2" author="aaronmatei">
+        <sql>
+            CREATE TABLE transaction (
+            id BIGINT NOT NULL AUTO_INCREMENT,
+            saving_id BIGINT NOT NULL,
+            user_id BIGINT NOT NULL,
+            date_of_saving DATETIME,
+            CONSTRAINT pk_id PRIMARY KEY (id),
+            CONSTRAINT fk_tran_saving FOREIGN KEY (saving_id) REFERENCES saving(id) ON DELETE CASCADE ON UPDATE CASCADE
+            );
+        </sql>
+        <rollback>
+            DROP TABLE transaction;
+        </rollback>
+    </changeSet>
+    <changeSet id="3" author="aaronmatei">
+        <sql>
+            INSERT INTO saving (type, amount,date_saved) VALUES ('monthly',5000.00,NOW());
+            INSERT INTO saving (type, amount, date_saved) VALUES ('personal',2500.00,NOW());
+
+        </sql>
+        <rollback>
+            TRUNCATE TABLE saving;
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

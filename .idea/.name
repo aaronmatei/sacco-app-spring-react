@@ -1,0 +1,1 @@
+eureka-discovery-service
